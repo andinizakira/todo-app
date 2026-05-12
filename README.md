@@ -45,4 +45,4 @@ Project ini telah dioptimalkan untuk keamanan dasar aplikasi web:
 - Perlindungan rute menggunakan **Middleware Autentikasi**.
 
 ---
-*Dibuat untuk keperluan seleksi magang — Menunjukkan kemampuan Fullstack Development.*
+*Semoga project ini memenuhi syarat untuk seleksi magang dan saya bisa diterima menjadi bagian dari perusahaan Bapak/Ibu. Terima kasih.*
