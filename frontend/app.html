@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DoIt — Dashboard</title>
+  <meta name="description" content="Dashboard manajemen tugas DoIt — premium, cepat, dan efisien." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .sidebar-active { background: linear-gradient(to right, rgba(139, 92, 246, 0.15), transparent); border-right: 2px solid #8b5cf6; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-white overflow-hidden flex">
+
+  <!-- Background Animated Blobs -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="blob absolute -top-40 -left-40 w-[600px] h-[600px] bg-violet-600/10 rounded-full blur-[120px]"></div>
+    <div class="blob2 absolute top-1/2 -right-40 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]"></div>
+    <div class="blob3 absolute -bottom-40 left-1/3 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px]"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="w-72 h-screen border-r border-white/5 bg-black/20 backdrop-blur-3xl hidden md:flex flex-col z-50">
+    <div class="p-8">
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-xl shadow-lg shadow-violet-500/30">
+          ✅
+        </div>
+        <span class="font-extrabold text-2xl tracking-tighter">DoIt</span>
+      </div>
+
+      <nav class="space-y-2">
+        <button onclick="setFilter('all')" id="filter-all-side" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 hover:bg-white/5 sidebar-active">
+          <span>📋</span> Semua Tugas
+        </button>
+        <button onclick="setFilter('active')" id="filter-active-side" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white/50 hover:text-white hover:bg-white/5">
+          <span>⚡</span> Sedang Berjalan
+        </button>
+        <button onclick="setFilter('done')" id="filter-done-side" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white/50 hover:text-white hover:bg-white/5">
+          <span>✅</span> Sudah Selesai
+        </button>
+      </nav>
+    </div>
+
+    <div class="mt-auto p-6 border-t border-white/5">
+      <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/5">
+        <div id="user-avatar-side" class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center font-bold text-lg">?</div>
+        <div class="flex-1 min-w-0">
+          <p id="sidebar-username" class="text-sm font-bold truncate">Loading...</p>
+          <p class="text-[10px] text-white/40 uppercase tracking-widest font-bold">Free Plan</p>
+        </div>
+        <button onclick="logout()" class="text-white/30 hover:text-red-400 transition-colors">
+          🚪
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 h-screen flex flex-col overflow-hidden relative z-10">
+    
+    <!-- Top Navigation -->
+    <header class="h-20 border-b border-white/5 px-8 flex items-center justify-between bg-slate-950/50 backdrop-blur-md">
+      <div class="flex items-center gap-4 flex-1">
+        <div class="relative w-full max-w-md group">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-violet-500 transition-colors">🔍</span>
+          <input type="text" id="search-tasks" placeholder="Cari tugas Anda..." 
+            class="w-full bg-white/5 border border-white/10 rounded-2xl py-2.5 pl-12 pr-4 text-sm outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all">
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-6">
+        <div class="hidden sm:flex flex-col text-right">
+          <p class="text-xs text-white/40">Selamat Datang,</p>
+          <p id="header-username" class="text-sm font-bold">User</p>
+        </div>
+        <button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-colors relative">
+          🔔 <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-violet-500 rounded-full border-2 border-slate-950"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="flex-1 overflow-y-auto scrollbar-thin p-8">
+      
+      <div class="max-w-5xl mx-auto space-y-8">
+        
+        <!-- Welcome Banner -->
+        <div class="relative rounded-[32px] overflow-hidden p-8 bg-gradient-to-br from-violet-600/20 to-purple-800/10 border border-white/10">
+          <div class="relative z-10">
+            <h1 id="greeting-text" class="text-4xl font-extrabold tracking-tight mb-2">Hai, User! 👋</h1>
+            <p class="text-white/60 max-w-lg">Ada <span id="stat-active-banner" class="text-violet-400 font-bold">0 tugas</span> yang menunggu untuk diselesaikan hari ini. Semangat! 🚀</p>
+          </div>
+          <!-- Decorative element -->
+          <div class="absolute top-0 right-0 w-64 h-64 bg-violet-500/20 blur-[80px] -mr-32 -mt-32 rounded-full"></div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass p-6 rounded-3xl group hover:-translate-y-1 transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-violet-500/10 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">📋</div>
+              <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">Total</span>
+            </div>
+            <p id="stat-total" class="text-4xl font-black mb-1">0</p>
+            <p class="text-xs text-white/40 font-medium">Tugas dalam database</p>
+          </div>
+
+          <div class="glass p-6 rounded-3xl group hover:-translate-y-1 transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">⚡</div>
+              <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">Aktif</span>
+            </div>
+            <p id="stat-active" class="text-4xl font-black text-amber-400 mb-1">0</p>
+            <p class="text-xs text-white/40 font-medium">Belum diselesaikan</p>
+          </div>
+
+          <div class="glass p-6 rounded-3xl group hover:-translate-y-1 transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">✅</div>
+              <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">Selesai</span>
+            </div>
+            <p id="stat-done" class="text-4xl font-black text-emerald-400 mb-1">0</p>
+            <p class="text-xs text-white/40 font-medium">Tugas yang berhasil</p>
+          </div>
+        </div>
+
+        <!-- Add Task and List Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+          
+          <!-- Left Column: Add Task -->
+          <div class="xl:col-span-4 space-y-6">
+            <div class="glass p-6 rounded-[32px]">
+              <h2 class="text-lg font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-violet-500 flex items-center justify-center text-sm shadow-lg shadow-violet-500/20">✨</span>
+                Tugas Baru
+              </h2>
+              <div class="space-y-4">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1">Judul Tugas</label>
+                  <input type="text" id="input-title" placeholder="Apa rencanamu?" 
+                    class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-violet-500 transition-all">
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1">Keterangan</label>
+                  <textarea id="input-desc" placeholder="Detail opsional..." rows="3"
+                    class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-violet-500 transition-all resize-none"></textarea>
+                </div>
+                <button onclick="addTask()" class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 py-4 rounded-2xl font-bold text-sm shadow-xl shadow-violet-500/20 hover:shadow-violet-500/40 transition-all duration-300 hover:-translate-y-1 active:translate-y-0">
+                  Simpan Tugas
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Task List -->
+          <div class="xl:col-span-8 space-y-6">
+            <div class="flex items-center justify-between">
+              <h2 id="list-title" class="text-xl font-extrabold tracking-tight">Semua Tugas</h2>
+              <div class="flex bg-white/5 p-1 rounded-xl border border-white/5">
+                <button onclick="setFilter('all')" id="filter-all" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-violet-600 text-white shadow-lg shadow-violet-500/20">Semua</button>
+                <button onclick="setFilter('active')" id="filter-active" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-white/40 hover:text-white">Aktif</button>
+                <button onclick="setFilter('done')" id="filter-done" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-white/40 hover:text-white">Selesai</button>
+              </div>
+            </div>
+
+            <div id="task-list" class="space-y-4">
+              <!-- Dynamically populated -->
+              <div class="flex flex-col items-center justify-center py-20 text-center animate-pulse">
+                <div class="text-6xl mb-4">⏳</div>
+                <p class="text-white/30 text-sm font-medium">Memuat tugas...</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-8 right-8 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

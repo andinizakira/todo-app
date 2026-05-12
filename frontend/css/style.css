@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════════════════
+   style.css — Custom-only styles (Tailwind handles the rest)
+   Kept: keyframe animations + custom checkbox + scrollbar
+═══════════════════════════════════════════════════════════ */
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 2px; }
+
+/* ── Autofill override (webkit) ─────────────────────────── */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px rgb(30 27 75 / 0.8) inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
+/* ── Custom circular checkbox ───────────────────────────── */
+.custom-checkbox { display: none; }
+.custom-checkbox + label {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(139,92,246,0.4);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.custom-checkbox:checked + label {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border-color: transparent;
+}
+.custom-checkbox + label::after { content: ''; }
+.custom-checkbox:checked + label::after {
+  content: '✓'; color: white; font-size: 12px; font-weight: 700;
+}
+
+/* ── Edit form toggle (used by app.js) ──────────────────── */
+.task-edit-form         { display: none; }
+.task-edit-form.show    { display: block; }
+
+/* ── Keyframe Animations ────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-30px) scale(1.05); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(100%); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Named animation classes (referenced in HTML/JS) ─────── */
+.blob  { animation: float 8s ease-in-out infinite; }
+.blob2 { animation: float 10s ease-in-out infinite reverse; }
+.blob3 { animation: float 12s ease-in-out infinite 2s; }
+.auth-card  { animation: fadeIn 0.5s ease forwards; }
+.task-enter { animation: slideUp 0.3s ease forwards; }
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
